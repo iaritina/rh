@@ -6,16 +6,24 @@ namespace BackOffice.Controllers;
 public class CongeController : Controller
 {
     private readonly CongeService _service;
+    private const int PageSize = 5;
 
     public CongeController(CongeService service)
     {
         _service = service;
     }
     // GET
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
-        var soldes = await _service.GetAllAsync();
-        return View(soldes);
+        var (items, totalCount) =
+            await _service.GetAllPagedAsync(page, PageSize);
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)PageSize);
+
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = totalPages;
+
+        return View(items);
     }
 
     // CREATE

@@ -12,8 +12,26 @@ public class CongeService
     {
         _context = context;
     }
+    
+    public async Task<(List<Conge> Items, int TotalCount)>
+        GetAllPagedAsync(int page, int pageSize)
+    {
+        var query = _context.Conges
+            .Include(s => s.Employe)
+            .AsQueryable();
 
-    public async Task<List<Conge>> GetAllAsync()
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .OrderBy(s => s.IdEmploye)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalCount);
+    }
+
+    public async Task<List<Conge>> GetAllAsync(int page, int pageSize)
     {
         return await _context.Conges
             .Include(s => s.Employe)

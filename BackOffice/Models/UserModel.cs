@@ -23,5 +23,10 @@ namespace BackOffice.Models
 
         [Required]
         public DateTime HiringDate { get; set; }
+        
+        public string GetFullName()
+        {
+            return $"{FirstName} {LastName}";
+        }
     }
 }

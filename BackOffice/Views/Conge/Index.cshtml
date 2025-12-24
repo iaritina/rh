@@ -14,48 +14,81 @@
     <div class="table-responsive rounded-lg shadow-sm">
         <table class="table table-hover mb-0">
             <thead class="table-light">
-                <tr>
-                    <th class="text-gray-600 font-semibold">Nom</th>
-                    <th class="text-gray-600 font-semibold">Email</th>
-                    <th class="text-gray-600 font-semibold">Téléphone</th>
-                    <th class="text-gray-600 font-semibold">Solde</th>
-                    <th class="text-center text-gray-600 font-semibold">Actions</th>
-                </tr>
+            <tr>
+                <th class="text-gray-600 font-semibold">Nom</th>
+                <th class="text-gray-600 font-semibold">Email</th>
+                <th class="text-gray-600 font-semibold">Solde Restant</th>
+                <th class="text-center text-gray-600 font-semibold">Actions</th>
+            </tr>
             </thead>
             <tbody>
-                @if (!Model.Any())
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-gray-500">
+                        <i class="bi bi-person-x fs-1 mb-2"></i>
+                        <p>Aucun employé trouvé.</p>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var solde in Model)
                 {
-                    <tr>
-                        <td colspan="5" class="text-center py-5 text-gray-500">
-                            <i class="bi bi-person-x fs-1 mb-2"></i>
-                            <p>Aucun employé trouvé.</p>
+                    <tr class="border-bottom">
+                        <td class="fw-semibold">@solde.Employe.GetFullName()</td>
+                        <td class="fw-semibold">@solde.Employe.Email</td>
+                        <td class="text-muted">@solde.SoldeRestant j</td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <!-- Bouton Éditer -->
+                                <a asp-action="Edit" asp-route-id="@solde.IdConge"
+                                   class="btn btn-outline-primary btn-sm rounded-circle p-2 shadow-sm border-0"
+                                   style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+                                   title="Modifier">
+                                    <i class="bi bi-pencil-fill fs-6"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 }
-                else
-                {
-                    @foreach (var solde in Model)
-                    {
-                        <tr class="border-bottom">
-                            <td class="fw-semibold">@solde.Employe.FirstName</td>
-                            @*<td class="fw-semibold">@solde.LastName</td>
-                            <td class="text-muted">@solde.Email</td>
-                            <td class="text-muted">@solde.Phone</td>*@
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <!-- Bouton Éditer -->
-                                    <a asp-action="Edit" asp-route-id="" 
-                                       class="btn btn-outline-primary btn-sm rounded-circle p-2 shadow-sm border-0"
-                                       style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
-                                       title="Modifier">
-                                        <i class="bi bi-pencil-fill fs-6"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                }
+            }
             </tbody>
         </table>
     </div>
+    <nav aria-label="Pagination soldes congé">
+        <ul class="pagination justify-content-center">
+
+            <!-- Previous -->
+            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(ViewBag.CurrentPage - 1)">
+                    Précédent
+                </a>
+            </li>
+
+            <!-- Pages -->
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <!-- Next -->
+            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(ViewBag.CurrentPage + 1)">
+                    Suivant
+                </a>
+            </li>
+
+        </ul>
+    </nav>
 </div>
