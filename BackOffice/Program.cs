@@ -1,18 +1,31 @@
 using BackOffice.Data;
 using BackOffice.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1️⃣ Ajouter le DbContext
+// DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2️⃣ Ajouter le UserService
+// Services
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<AuthService>();
 
-// 3️⃣ Ajouter les controllers avec vues
+// Controllers avec vues
 builder.Services.AddControllersWithViews();
+
+// Authentification par cookie
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login"; // page de login
+        options.AccessDeniedPath = "/Account/AccessDenied"; // page si accès refusé
+        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -26,8 +39,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication(); // ⚠️ avant Authorization
 app.UseAuthorization();
 
+// Route par défaut
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Users}/{action=Index}/{id?}");

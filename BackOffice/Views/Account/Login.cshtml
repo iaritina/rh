@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_AuthLayout";
+}
+
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+        <!-- Colonne gauche avec image -->
+        <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center p-0">
+            <img src="~/images/rh.png" alt="Illustration"
+                 class="img-fluid vh-100"
+                 style="object-fit: cover; max-width: 90%; width: auto;">
+        </div>
+
+        <!-- Colonne droite avec formulaire -->
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+            <div style="max-width: 400px; width: 100%;">
+                <h2 class="text-center mb-4">Connexion</h2>
+
+                <form method="post" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="invalid-feedback">Veuillez entrer un email valide.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <div class="invalid-feedback">Veuillez entrer votre mot de passe.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="text-danger mt-3">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <p>@error.ErrorMessage</p>
+                            }
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+</script>
+}
