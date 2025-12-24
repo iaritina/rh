@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using BackOffice.Services;
 using BackOffice.Models;
 using BackOffice.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackOffice.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly UserService _service;
