@@ -10,10 +10,12 @@ namespace BackOffice.Services
     public class UserService
     {
         private readonly AppDbContext _context;
+        private readonly CongeService soldeService;
 
-        public UserService(AppDbContext context)
+        public UserService(AppDbContext context, CongeService soldeService)
         {
             _context = context;
+            this.soldeService = soldeService;
         }
 
         public async Task<PagedResult<User>> GetAllUsers(int page, int pageSize)
@@ -44,6 +46,7 @@ namespace BackOffice.Services
             
             _context.Users.Add(user);
             await _context.SaveChangesAsync(); 
+            await soldeService.CreateAsync(user.Id);
             return user;
         }
 
