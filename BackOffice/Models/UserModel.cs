@@ -24,6 +24,7 @@ namespace BackOffice.Models
         [Required]
         public DateTime HiringDate { get; set; }
         
+        public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
         public string GetFullName()
         {
             return $"{FirstName} {LastName}";

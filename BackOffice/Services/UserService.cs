@@ -59,7 +59,18 @@ namespace BackOffice.Services
                 await _context.SaveChangesAsync();
             }
         }
-        
+
+        public async Task<List<User>> SearchUsersByName(string query)
+        {
+            query = query.ToLower();
+            
+            return await _context.Users
+                .AsNoTracking()
+                .Where(u => u.FirstName.ToLower().Contains(query) || u.LastName.ToLower().Contains(query))
+                .OrderBy(u => u.LastName)
+                .ThenBy(u => u.FirstName)
+                .ToListAsync();
+        }
         
     }
     

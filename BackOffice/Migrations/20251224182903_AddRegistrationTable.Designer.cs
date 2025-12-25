@@ -4,6 +4,7 @@ using BackOffice.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackOffice.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251224182903_AddRegistrationTable")]
+    partial class AddRegistrationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,62 +47,6 @@ namespace BackOffice.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Registrations");
-            modelBuilder.Entity("BackOffice.Models.Conge", b =>
-                {
-                    b.Property<int>("IdConge")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdConge"));
-
-                    b.Property<int>("IdEmploye")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("SoldeRestant")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("SoldeTotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("IdConge");
-
-                    b.HasIndex("IdEmploye");
-
-                    b.ToTable("Conges");
-                });
-
-            modelBuilder.Entity("BackOffice.Models.DemandeConge", b =>
-                {
-                    b.Property<int>("IdDmd")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDmd"));
-
-                    b.Property<DateTime>("DateDebut")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateFin")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Motif")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("NombreJour")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdDmd");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("DemandeConges");
                 });
 
             modelBuilder.Entity("BackOffice.Models.User", b =>
@@ -154,26 +101,6 @@ namespace BackOffice.Migrations
             modelBuilder.Entity("BackOffice.Models.User", b =>
                 {
                     b.Navigation("Registrations");
-            modelBuilder.Entity("BackOffice.Models.Conge", b =>
-                {
-                    b.HasOne("BackOffice.Models.User", "Employe")
-                        .WithMany()
-                        .HasForeignKey("IdEmploye")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employe");
-                });
-
-            modelBuilder.Entity("BackOffice.Models.DemandeConge", b =>
-                {
-                    b.HasOne("BackOffice.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
