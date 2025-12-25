@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BackOffice.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreateNew : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,23 +51,20 @@ namespace BackOffice.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DemandeConges",
+                name: "Registrations",
                 columns: table => new
                 {
-                    IdDmd = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    DateDebut = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateFin = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Motif = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NombreJour = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DemandeConges", x => x.IdDmd);
+                    table.PrimaryKey("PK_Registrations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DemandeConges_Users_UserId",
+                        name: "FK_Registrations_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -80,8 +77,8 @@ namespace BackOffice.Migrations
                 column: "IdEmploye");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DemandeConges_UserId",
-                table: "DemandeConges",
+                name: "IX_Registrations_UserId",
+                table: "Registrations",
                 column: "UserId");
         }
 
@@ -92,7 +89,7 @@ namespace BackOffice.Migrations
                 name: "Conges");
 
             migrationBuilder.DropTable(
-                name: "DemandeConges");
+                name: "Registrations");
 
             migrationBuilder.DropTable(
                 name: "Users");

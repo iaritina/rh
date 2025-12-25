@@ -46,20 +46,29 @@
     </header>
 
     <!-- Sidebar -->
-    <aside class="sidebar bg-light vh-100 p-3">
+    <aside class="sidebar">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link" asp-controller="/Users" asp-action="Index">
-                    <i class="bi-people me-2"></i> Employés
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" ? "active" : "")"
+                   asp-controller="Users" asp-action="Index">
+                    <i class="bi bi-people me-2"></i> Employés
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" asp-controller="Conge" asp-action="Index">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Conge" ? "active" : "")"
+                   asp-controller="Conge" asp-action="Index">
                     <i class="bi bi-calendar2-check me-2"></i> Solde
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Registration" ? "active" : "")"
+                   asp-controller="Registration" asp-action="Create">
+                    <i class="bi bi-fingerprint me-2"></i> Pointage
                 </a>
             </li>
         </ul>
     </aside>
+
 
     <!-- Main Content -->
     <main class="main-content p-3">
