@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackOffice.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251224181502_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251225074324_InitialCreateNew")]
+    partial class InitialCreateNew
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,38 +49,28 @@ namespace BackOffice.Migrations
                     b.ToTable("Conges");
                 });
 
-            modelBuilder.Entity("BackOffice.Models.DemandeConge", b =>
+            modelBuilder.Entity("BackOffice.Models.Registration", b =>
                 {
-                    b.Property<int>("IdDmd")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDmd"));
-
-                    b.Property<DateTime>("DateDebut")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateFin")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Motif")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("NombreJour")
-                        .HasColumnType("decimal(18,2)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("IdDmd");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DemandeConges");
+                    b.ToTable("Registrations");
                 });
 
             modelBuilder.Entity("BackOffice.Models.User", b =>
@@ -132,15 +122,20 @@ namespace BackOffice.Migrations
                     b.Navigation("Employe");
                 });
 
-            modelBuilder.Entity("BackOffice.Models.DemandeConge", b =>
+            modelBuilder.Entity("BackOffice.Models.Registration", b =>
                 {
                     b.HasOne("BackOffice.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Registrations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BackOffice.Models.User", b =>
+                {
+                    b.Navigation("Registrations");
                 });
 #pragma warning restore 612, 618
         }
