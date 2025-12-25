@@ -49,6 +49,12 @@
     <aside class="sidebar">
         <ul class="nav flex-column">
             <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Monitoring" ? "active" : "")"
+                   asp-controller="Monitoring" asp-action="Index">
+                    <i class="bi bi-clipboard-data me-2"></i> Monitoring
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" ? "active" : "")"
                    asp-controller="Users" asp-action="Index">
                     <i class="bi bi-people me-2"></i> Employés
