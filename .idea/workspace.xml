@@ -5,8 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a30c2e1a-e5bf-43f4-808c-a8812a0968ea" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/BackOffice/wwwroot/css/layout.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BackOffice/Views/Shared/_Layout.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/BackOffice/Views/Shared/_Layout.cshtml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BackOffice/Controllers/RegistrationController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BackOffice/Models/RegistrationModel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BackOffice/Models/RegistrationType.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BackOffice/Services/RegistrationService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BackOffice/Views/Registration/Create.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackOffice/Data/AppDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BackOffice/Data/AppDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackOffice/Migrations/AppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BackOffice/Migrations/AppDbContextModelSnapshot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackOffice/Models/UserModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BackOffice/Models/UserModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackOffice/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BackOffice/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackOffice/Services/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BackOffice/Services/UserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/compose.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,9 +34,29 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/BackOffice/Controllers/RegistrationController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Controllers/UserController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Data/AppDbContext.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Models/ErrorViewModel.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Models/RegistrationModel.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Models/RegistrationType.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Models/UserModel.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Services/RegistrationService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Services/UserService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/Views/Registration/Create.cshtml" root0="FORCE_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BackOffice/Views/Shared/_Layout.cshtml" root0="FORCE_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/BackOffice/Views/Shared/_ValidationScriptsPartial.cshtml" root0="FORCE_HIGHLIGHTING" root1="SKIP_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css.map" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/wwwroot/lib/bootstrap/dist/js/bootstrap.js.map" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js.map" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/BackOffice/wwwroot/lib/jquery/dist/jquery.min.map" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -39,9 +69,10 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/registration",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -49,6 +80,11 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver"
+    ]
   }
 }]]></component>
   <component name="TaskManager">
@@ -59,7 +95,8 @@
       <option name="presentableId" value="Default" />
       <updated>1766559795343</updated>
       <workItem from="1766559796281" duration="269000" />
-      <workItem from="1766560127195" duration="1621000" />
+      <workItem from="1766560127195" duration="5995000" />
+      <workItem from="1766576425886" duration="23251000" />
     </task>
     <servers />
   </component>

@@ -12,4 +12,4 @@
     restart: unless-stopped
 
 volumes:
-  sqlserver_data:
+  sqlserver_data:  
