@@ -2,6 +2,8 @@ using BackOffice.Data;
 using BackOffice.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using BackOffice.Hubs;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<RegistrationService>();
+builder.Services.AddSignalR();
+builder.Services.AddScoped<MonitoringService>();
+
 
 builder.Services.AddScoped<CongeService>();
 
@@ -45,6 +50,9 @@ app.UseRouting();
 
 app.UseAuthentication(); // ⚠️ avant Authorization
 app.UseAuthorization();
+
+app.MapHub<MonitoringHub>("/monitoringHub");
+
 
 // Route par défaut
 app.MapControllerRoute(
