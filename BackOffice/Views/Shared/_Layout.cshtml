@@ -67,6 +67,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "DemandeConge" ? "active" : "")"
+                   asp-controller="DemandeConge" asp-action="Index">
+                    <i class="bi bi-calendar2-check me-2"></i> Demande
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Registration" ? "active" : "")"
                    asp-controller="Registration" asp-action="Create">
                     <i class="bi bi-fingerprint me-2"></i> Pointage

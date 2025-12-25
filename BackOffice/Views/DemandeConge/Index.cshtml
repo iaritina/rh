@@ -1,0 +1,53 @@
+﻿@model IEnumerable<DemandeConge>
+
+<h2>Demandes de congé</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">
+    Nouvelle demande
+</a>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+    <tr>
+        <th>Employé</th>
+        <th>Période</th>
+        <th>Nb jours</th>
+        <th>Motif</th>
+        <th>Statut</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var d in Model)
+    {
+        <tr>
+            <td>@d.UserId</td>
+            <td>
+                @d.DateDebut.ToShortDateString()
+                →
+                @d.DateFin.ToShortDateString()
+            </td>
+            <td>@d.NombreJour</td>
+            <td>@d.Motif</td>
+            <td>
+                <span class="badge
+                    @(d.Status == StatusEnum.pending ? "badge-warning" :
+                                                 d.Status == StatusEnum.ok ? "badge-success" :
+                                                 "badge-danger")">
+                    @d.Status
+                </span>
+            </td>
+            <td>
+                @if (d.Status == StatusEnum.pending)
+                {
+                    <a asp-action="Valider"
+                       asp-route-id="@d.IdDmd"
+                       class="btn btn-success btn-sm">
+                        Valider
+                    </a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

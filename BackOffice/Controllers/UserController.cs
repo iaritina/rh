@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BackOffice.Controllers
 {
-    [Authorize]
+    
     public class UsersController : Controller
     {
         private readonly UserService _service;
