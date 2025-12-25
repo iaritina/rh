@@ -1,0 +1,183 @@
+@{
+    ViewData["Title"] = "Pointage";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5" style="max-width: 650px; min-height: 520px;">
+
+    <!-- Messages BACKEND (TempData) -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center mb-4">
+            <i class="bi bi-check-circle me-2"></i>
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger text-center mb-4">
+            <i class="bi bi-x-circle me-2"></i>
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- Message FRONT (validation JS) -->
+    <div id="errorBox" class="alert alert-danger d-none text-center mb-4">
+        Veuillez sélectionner un employé existant et choisir Entrée ou Sortie.
+    </div>
+
+    <h2 class="text-center mb-4">
+        <i class="bi bi-stopwatch me-2"></i>Pointage
+    </h2>
+
+    <form method="post">
+
+        <!-- Recherche utilisateur -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Rechercher un employé</label>
+            <div class="input-group input-group-lg">
+                <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text"
+                       id="userSearch"
+                       class="form-control"
+                       placeholder="Nom, prénom, email..."
+                       autocomplete="off"
+                       required>
+            </div>
+
+            <input type="hidden" name="userId" id="selectedUserId">
+
+            <!-- Résultats -->
+            <div id="userResults"
+                 class="list-group mt-1"
+                 style="z-index:1000; max-height:220px; overflow-y:auto;">
+            </div>
+        </div>
+
+        <!-- Entrée / Sortie -->
+        <div class="mb-4">
+            <div class="d-flex gap-2">
+                <button type="button"
+                        id="btnEntree"
+                        class="btn btn-outline-success btn-lg w-50">
+                    <i class="bi bi-door-open me-2"></i>Entrée
+                </button>
+
+                <button type="button"
+                        id="btnSortie"
+                        class="btn btn-outline-danger btn-lg w-50">
+                    <i class="bi bi-door-closed me-2"></i>Sortie
+                </button>
+            </div>
+
+            <input type="hidden" name="status" id="statusValue">
+        </div>
+
+        <!-- Timestamp -->
+        <input type="datetime-local"
+               name="Timestamp"
+               class="d-none"
+               value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+               required>
+
+        <!-- Bouton -->
+        <button type="submit" class="btn btn-dark btn-lg w-100 mb-3">
+            Valider
+        </button>
+
+        <!-- Heure -->
+        <div class="text-center fs-3 fw-bold text-primary" id="currentTime">
+            @DateTime.Now.ToString("HH:mm:ss")
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+    const searchInput = document.getElementById("userSearch");
+    const resultsBox = document.getElementById("userResults");
+    const userIdInput = document.getElementById("selectedUserId");
+    const errorBox = document.getElementById("errorBox");
+
+    const btnEntree = document.getElementById("btnEntree");
+    const btnSortie = document.getElementById("btnSortie");
+    const statusValue = document.getElementById("statusValue");
+    const form = document.querySelector("form");
+
+    /* ===== Horloge ===== */
+    function updateClock() {
+        document.getElementById("currentTime").textContent =
+            new Date().toLocaleTimeString('fr-FR', { hour12: false });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    /* ===== Recherche utilisateur ===== */
+    searchInput.addEventListener("keyup", async function () {
+        const query = this.value.trim();
+        userIdInput.value = "";
+        resultsBox.innerHTML = "";
+
+        if (query.length < 2) return;
+
+        const response = await fetch(`/Registration/SearchUsers?query=${encodeURIComponent(query)}`);
+        const users = await response.json();
+
+        if (users.length === 0) {
+            resultsBox.innerHTML =
+                "<div class='list-group-item text-muted'>Aucun résultat</div>";
+            return;
+        }
+
+        users.forEach(u => {
+            const item = document.createElement("button");
+            item.type = "button";
+            item.className = "list-group-item list-group-item-action";
+            item.innerHTML = `
+                <i class="bi bi-person-circle me-2"></i>
+                ${u.firstName} ${u.lastName}
+                <small class="text-muted">(${u.email})</small>
+            `;
+
+            item.onclick = () => {
+                searchInput.value = `${u.firstName} ${u.lastName}`;
+                userIdInput.value = u.id;
+                resultsBox.innerHTML = "";
+            };
+
+            resultsBox.appendChild(item);
+        });
+    });
+
+    /* ===== Entrée / Sortie exclusif ===== */
+    btnEntree.onclick = () => {
+        btnEntree.className = "btn btn-success btn-lg w-50";
+        btnSortie.className = "btn btn-outline-danger btn-lg w-50";
+        statusValue.value = 1;
+    };
+
+    btnSortie.onclick = () => {
+        btnSortie.className = "btn btn-danger btn-lg w-50";
+        btnEntree.className = "btn btn-outline-success btn-lg w-50";
+        statusValue.value = 0;
+    };
+
+    /* ===== Validation ===== */
+    form.addEventListener("submit", function (e) {
+        errorBox.classList.add("d-none");
+
+        if (!userIdInput.value || statusValue.value === "") {
+            e.preventDefault();
+            errorBox.classList.remove("d-none");
+        }
+    });
+
+    /* Auto-hide messages TempData */
+    setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(a => a.remove());
+    }, 4000);
+</script>
+}

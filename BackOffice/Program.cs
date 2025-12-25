@@ -12,6 +12,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Services
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<RegistrationService>();
+
 
 // Controllers avec vues
 builder.Services.AddControllersWithViews();
