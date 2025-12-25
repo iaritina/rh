@@ -45,14 +45,16 @@ namespace BackOffice.Controllers
             try
             {
                 await _service.Create(userId, status);
-                TempData["SuccessMessage"] = "Pointage effectuée avec succès";
+                TempData["SuccessRegistrationMessage"] = "Pointage effectuée avec succès";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
+                TempData["ErrorRegistrationMessage"] = ex.Message;
             }
 
             return RedirectToAction("Create", "Registration");
         }
+
+		
     }
 }
