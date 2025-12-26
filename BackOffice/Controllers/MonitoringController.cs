@@ -29,11 +29,13 @@ namespace BackOffice.Controllers
         public async Task NotifyUpdate()
         {
             var model = await _service.GetStatusAsync();
-            await _hub.Clients.All.SendAsync("RefreshStatus", new
+            await _hub.Clients.All.SendAsync("RefreshStatus", model.Users.Select(u => new
             {
-                present = model.Present.Select(u => new { u.FirstName, u.LastName }),
-                absent = model.Absent.Select(u => new { u.FirstName, u.LastName })
-            });
+                u.LastName,
+                LastRegistrationTime = u.LastRegistrationTime?.ToString("HH:mm"),
+                StatusText = u.StatusText,
+                StatusBadgeClass = u.StatusBadgeClass
+            }));
         }
     }
 }
