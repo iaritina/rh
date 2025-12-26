@@ -67,6 +67,29 @@ namespace BackOffice.Controllers
             
             return RedirectToAction("Index");
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> ImportCsv(IFormFile csvFile)
+        {
+            if (csvFile == null || csvFile.Length == 0)
+            {
+                TempData["ErrorMessage"] = "Veuillez sélectionner un fichier CSV";
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+                int count = await _service.ImportUsersFromCsvAsync(csvFile);
+                TempData["ImportSuccessMessage"] = $"{count} utilisateur(s) importé(s) avec succès";
+            }
+            catch (Exception ex)
+            {
+                TempData["ImportErrorMessage"] = "Erreur lors de l'import : " + ex.Message;
+            }
+
+            return RedirectToAction("Index");
+        }
+
 
     }
 }
