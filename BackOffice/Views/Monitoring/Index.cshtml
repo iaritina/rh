@@ -4,145 +4,116 @@
 
 <div class="container mt-4">
     <div class="row g-4">
-        <!-- Présents -->
+        <!-- Tableau Présents -->
         <div class="col-md-6">
             <div class="bg-white rounded-lg shadow-sm p-3 h-100">
-                <div class="d-flex align-items-center mb-3">
-                    <h4 class="text-success fw-semibold fs-5 mb-0">Présents</h4>
-                    <span class="badge bg-success ms-2">@Model.Present.Count()</span>
-                </div>
-                <div class="list-group list-group-flush">
-                    @if (Model.Present.Any())
+                <h4 class="text-success fw-semibold mb-3">
+                    Présents
+                    <span class="badge bg-success" id="presentCount">
+                        @Model.Users.Count(u => u.LastStatus == BackOffice.Models.RegistrationType.Enter)
+                    </span>
+                </h4>
+                <table class="table table-bordered table-striped" id="presentTable">
+                    <thead>
+                    <tr>
+                        <th>Utilisateur</th>
+                        <th>Dernier Pointage</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var u in Model.Users.Where(u => u.LastStatus == BackOffice.Models.RegistrationType.Enter))
                     {
-                    @foreach (var u in Model.Present)
-                    {
-                    <div class="list-group-item px-2 py-2 border-0 bg-transparent">
-                        <div class="d-flex align-items-center">
-                            <span class="me-2">●</span>
-                            <span class="text-gray-800 fw-medium">@u.GetFullName()</span>
-                        </div>
-                    </div>
+                    <tr>
+                        <td>@u.LastName</td>
+                        <td>@(u.LastRegistrationTime?.ToString("HH:mm dd/MM/yyyy") ?? "Aucun")</td>
+                        <td><span class="badge bg-success">Présent</span></td>
+                    </tr>
                     }
-                    }
-                    else
-                    {
-                    <div class="text-center text-muted py-3">
-                        <i class="bi bi-person-check fs-3 d-block mb-1"></i>
-                        Aucun présent
-                    </div>
-                    }
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Absents -->
+        <!-- Tableau Absents -->
         <div class="col-md-6">
             <div class="bg-white rounded-lg shadow-sm p-3 h-100">
-                <div class="d-flex align-items-center mb-3">
-                    <h4 class="text-danger fw-semibold fs-5 mb-0">Absents</h4>
-                    <span class="badge bg-danger ms-2">@Model.Absent.Count()</span>
-                </div>
-                <div class="list-group list-group-flush">
-                    @if (Model.Absent.Any())
+                <h4 class="text-danger fw-semibold mb-3">
+                    Absents
+                    <span class="badge bg-danger" id="absentCount">
+                        @Model.Users.Count(u => u.LastStatus != BackOffice.Models.RegistrationType.Enter)
+                    </span>
+                </h4>
+                <table class="table table-bordered table-striped" id="absentTable">
+                    <thead>
+                    <tr>
+                        <th>Utilisateur</th>
+                        <th>Dernier Pointage</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var u in Model.Users.Where(u => u.LastStatus != BackOffice.Models.RegistrationType.Enter))
                     {
-                    @foreach (var u in Model.Absent)
-                    {
-                    <div class="list-group-item px-2 py-2 border-0 bg-transparent">
-                        <div class="d-flex align-items-center">
-                            <span class="me-2">●</span>
-                            <span class="text-gray-800 fw-medium">@u.GetFullName()</span>
-                        </div>
-                    </div>
+                    <tr>
+                        <td>@u.LastName</td>
+                        <td>@(u.LastRegistrationTime?.ToString("HH:mm dd/MM/yyyy") ?? "Aucun")</td>
+                        <td><span class="badge bg-danger">Absent</span></td>
+                    </tr>
                     }
-                    }
-                    else
-                    {
-                    <div class="text-center text-muted py-3">
-                        <i class="bi bi-person-x fs-3 d-block mb-1"></i>
-                        Aucun absent
-                    </div>
-                    }
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
 <!-- SignalR -->
-<script src="https://cdn.jsdelivr.net/npm/microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr/dist/browser/signalr.min.js"></script>
 <script>
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/monitoringHub")
         .build();
 
     connection.on("RefreshStatus", data => {
-        const presentContainer = document.querySelector('#presentList');
-        const absentContainer = document.querySelector('#absentList');
+        const presentBody = document.querySelector("#presentTable tbody");
+        const absentBody = document.querySelector("#absentTable tbody");
 
-        presentContainer.innerHTML = data.present.length
-            ? data.present.map(u => `<div class="list-group-item px-2 py-2 border-0 bg-transparent"><div class="d-flex align-items-center"><span class="me-2">●</span><span class="text-gray-800 fw-medium">${u.firstName} ${u.lastName}</span></div></div>`).join("")
-            : `<div class="text-center text-muted py-3"><i class="bi bi-person-check fs-3 d-block mb-1"></i>Aucun présent</div>`;
+        // Présents
+        presentBody.innerHTML = data.present.length
+            ? data.present.map(u => `
+                <tr>
+                    <td>${u.lastName}</td>
+                    <td>${u.lastRegistrationTime ?? "Aucun"}</td>
+                    <td><span class="badge bg-success">Présent</span></td>
+                </tr>`).join("")
+            : `<tr><td colspan="3" class="text-center text-muted">Aucun</td></tr>`;
 
-        absentContainer.innerHTML = data.absent.length
-            ? data.absent.map(u => `<div class="list-group-item px-2 py-2 border-0 bg-transparent"><div class="d-flex align-items-center"><span class="me-2">●</span><span class="text-gray-800 fw-medium">${u.firstName} ${u.lastName}</span></div></div>`).join("")
-            : `<div class="text-center text-muted py-3"><i class="bi bi-person-x fs-3 d-block mb-1"></i>Aucun absent</div>`;
+        // Absents
+        absentBody.innerHTML = data.absent.length
+            ? data.absent.map(u => `
+                <tr>
+                    <td>${u.lastName}</td>
+                    <td>${u.lastRegistrationTime ?? "Aucun"}</td>
+                    <td><span class="badge bg-danger">Absent</span></td>
+                </tr>`).join("")
+            : `<tr><td colspan="3" class="text-center text-muted">Aucun</td></tr>`;
 
         // Mettre à jour les badges
-        document.querySelector('#presentCount').textContent = data.present.length;
-        document.querySelector('#absentCount').textContent = data.absent.length;
+        document.getElementById("presentCount").textContent = data.present.length;
+        document.getElementById("absentCount").textContent = data.absent.length;
     });
 
     connection.start().catch(err => console.error(err));
 </script>
 
 <style>
-    .bg-white {
-        background-color: #ffffff !important;
-    }
-
-    .rounded-lg {
-        border-radius: 0.5rem !important;
-    }
-
-    .shadow-sm {
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-    }
-
-    .text-gray-800 {
-        color: #1f2937 !important;
-    }
-
-    .text-success {
-        color: #10b981 !important;
-    }
-
-    .text-danger {
-        color: #ef4444 !important;
-    }
-
-    .badge {
-        font-weight: 600;
-        padding: 0.35em 0.6em;
-        font-size: 0.75rem;
-    }
-
-    .list-group-item {
-        padding: 0.375rem 0.5rem;
-    }
-
-    .list-group-item:first-child {
-        border-top: none;
-    }
-
-    .list-group-item:last-child {
-        border-bottom: none;
-    }
-
-    .fw-medium {
-        font-weight: 500;
-    }
-
-    .fs-5 {
-        font-size: 1.25rem;
-    }
+    .bg-white { background-color: #ffffff !important; }
+    .rounded-lg { border-radius: 0.5rem !important; }
+    .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05) !important; }
+    .fw-medium { font-weight: 500; }
+    .fw-semibold { font-weight: 600; }
+    .bg-success { background-color: #10b981 !important; }
+    .bg-danger { background-color: #ef4444 !important; }
+    .table th, .table td { vertical-align: middle; }
 </style>

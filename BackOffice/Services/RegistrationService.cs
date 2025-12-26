@@ -2,6 +2,8 @@ using BackOffice.Data;
 using BackOffice.Models;
 using Microsoft.EntityFrameworkCore;
 using BackOffice.ViewModels;
+using Microsoft.AspNetCore.SignalR;
+using BackOffice.Hubs;
 
 
 namespace BackOffice.Services
@@ -9,19 +11,23 @@ namespace BackOffice.Services
     public class RegistrationService
     {
         private readonly AppDbContext _context;
+        private readonly IHubContext<MonitoringHub> _hub;
+        private readonly MonitoringService _monitoringService;
 
-        public RegistrationService(AppDbContext context)
+        public RegistrationService(
+            AppDbContext context,
+            IHubContext<MonitoringHub> hub,
+            MonitoringService monitoringService)
         {
             _context = context;
+            _hub = hub;
+            _monitoringService = monitoringService;
         }
 
         public async Task Create(int userId, RegistrationType status)
         {
-            var user = await _context.Users.AnyAsync(u => u.Id == userId);
-            if (!user)
-            {
-                throw new Exception("Utilisateur introuvable");
-            }
+            var exists = await _context.Users.AnyAsync(u => u.Id == userId);
+            if (!exists) throw new Exception("Utilisateur introuvable");
 
             var registration = new Registration
             {
@@ -32,7 +38,30 @@ namespace BackOffice.Services
 
             _context.Registrations.Add(registration);
             await _context.SaveChangesAsync();
+
+            // Notifier SignalR
+            var model = await _monitoringService.GetStatusAsync();
+            await _hub.Clients.All.SendAsync("RefreshStatus", new
+            {
+                present = model.Users.Where(u => u.LastStatus == RegistrationType.Enter)
+                    .Select(u => new
+                    {
+                        lastName = u.LastName,
+                        lastRegistrationTime = u.LastRegistrationTime?.ToString("HH:mm dd/MM/yyyy") ?? "-",
+                        statusText = u.StatusText,
+                        badgeClass = u.StatusBadgeClass
+                    }),
+                absent = model.Users.Where(u => u.LastStatus != RegistrationType.Enter)
+                    .Select(u => new
+                    {
+                        lastName = u.LastName,
+                        lastRegistrationTime = u.LastRegistrationTime?.ToString("HH:mm dd/MM/yyyy") ?? "-",
+                        statusText = u.StatusText,
+                        badgeClass = u.StatusBadgeClass
+                    })
+            });
         }
+
 
         public async Task<List<WorkDuration>> GetWorkDurationByDateWithSchedule(DateTime? date = null)
         {
