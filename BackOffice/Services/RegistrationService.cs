@@ -39,27 +39,23 @@ namespace BackOffice.Services
             _context.Registrations.Add(registration);
             await _context.SaveChangesAsync();
 
-            // Notifier SignalR
+
             var model = await _monitoringService.GetStatusAsync();
+
             await _hub.Clients.All.SendAsync("RefreshStatus", new
             {
-                present = model.Users.Where(u => u.LastStatus == RegistrationType.Enter)
-                    .Select(u => new
-                    {
-                        lastName = u.LastName,
-                        lastRegistrationTime = u.LastRegistrationTime?.ToString("HH:mm dd/MM/yyyy") ?? "-",
-                        statusText = u.StatusText,
-                        badgeClass = u.StatusBadgeClass
-                    }),
-                absent = model.Users.Where(u => u.LastStatus != RegistrationType.Enter)
-                    .Select(u => new
-                    {
-                        lastName = u.LastName,
-                        lastRegistrationTime = u.LastRegistrationTime?.ToString("HH:mm dd/MM/yyyy") ?? "-",
-                        statusText = u.StatusText,
-                        badgeClass = u.StatusBadgeClass
-                    })
+                model.TotalUsers,
+                model.PresentUsers,
+                model.AbsentUsers,
+                Users = model.Users.Select(u => new
+                {
+                    u.LastName,
+                    lastRegistrationTime = u.LastRegistrationTime?.ToString("HH:mm dd/MM/yyyy") ?? "-",
+                    StatusText = u.StatusText,
+                    StatusBadgeClass = u.StatusBadgeClass
+                })
             });
+
         }
 
 

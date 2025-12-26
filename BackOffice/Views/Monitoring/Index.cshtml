@@ -1,20 +1,53 @@
 @model BackOffice.ViewModels.MonitoringViewModel
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
 <div class="container mt-4">
+
+    <!-- Titre -->
+    <h2 class="mb-4 fw-bold">Monitoring</h2>
+
+    <!-- Statistiques en ligne horizontale (à gauche) -->
+    <div class="d-flex gap-3 mb-4 flex-wrap">
+        <!-- Total utilisateurs -->
+        <div class="card border-0 bg-white shadow-sm rounded-3 p-3 text-center" style="min-width: 120px;">
+            <div class="text-muted small mb-1 d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-people fs-6"></i>
+                <span>Total</span>
+            </div>
+            <h3 class="fw-bold text-dark m-0" id="totalUsers">@Model.TotalUsers</h3>
+        </div>
+
+        <!-- Présents (Entrée) -->
+        <div class="card border-0 bg-white shadow-sm rounded-3 p-3 text-center" style="min-width: 120px;">
+            <div class="text-success small mb-1 d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-door-open fs-6"></i>
+                <span>Présents</span>
+            </div>
+            <h3 class="fw-bold text-success m-0" id="presentCount">@Model.PresentUsers</h3>
+        </div>
+
+        <!-- Absents (Sortie) -->
+        <div class="card border-0 bg-white shadow-sm rounded-3 p-3 text-center" style="min-width: 120px;">
+            <div class="text-danger small mb-1 d-flex align-items-center justify-content-center gap-1">
+                <i class="bi bi-door-closed fs-6"></i>
+                <span>Absents</span>
+            </div>
+            <h3 class="fw-bold text-danger m-0" id="absentCount">@Model.AbsentUsers</h3>
+        </div>
+    </div>
+
+    <!-- Tableaux en ligne horizontale -->
     <div class="row g-4">
-        <!-- Tableau Présents -->
+        <!-- Présents -->
         <div class="col-md-6">
-            <div class="bg-white rounded-lg shadow-sm p-3 h-100">
-                <h4 class="text-success fw-semibold mb-3">
-                    Présents
-                    <span class="badge bg-success" id="presentCount">
-                        @Model.Users.Count(u => u.LastStatus == BackOffice.Models.RegistrationType.Enter)
-                    </span>
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <h4 class="text-success fw-semibold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-door-open me-1"></i>Présents
                 </h4>
-                <table class="table table-bordered table-striped" id="presentTable">
-                    <thead>
+                <table class="table table-hover table-striped" id="presentTable">
+                    <thead class="table-light">
                     <tr>
                         <th>Utilisateur</th>
                         <th>Dernier Pointage</th>
@@ -35,17 +68,14 @@
             </div>
         </div>
 
-        <!-- Tableau Absents -->
+        <!-- Absents -->
         <div class="col-md-6">
-            <div class="bg-white rounded-lg shadow-sm p-3 h-100">
-                <h4 class="text-danger fw-semibold mb-3">
-                    Absents
-                    <span class="badge bg-danger" id="absentCount">
-                        @Model.Users.Count(u => u.LastStatus != BackOffice.Models.RegistrationType.Enter)
-                    </span>
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <h4 class="text-danger fw-semibold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-door-closed me-1"></i>Absents
                 </h4>
-                <table class="table table-bordered table-striped" id="absentTable">
-                    <thead>
+                <table class="table table-hover table-striped" id="absentTable">
+                    <thead class="table-light">
                     <tr>
                         <th>Utilisateur</th>
                         <th>Dernier Pointage</th>
@@ -76,44 +106,80 @@
         .build();
 
     connection.on("RefreshStatus", data => {
+
+        document.getElementById("totalUsers").innerText = data.totalUsers;
+        document.getElementById("presentCount").innerText = data.presentUsers;
+        document.getElementById("absentCount").innerText = data.absentUsers;
+
         const presentBody = document.querySelector("#presentTable tbody");
         const absentBody = document.querySelector("#absentTable tbody");
 
-        // Présents
-        presentBody.innerHTML = data.present.length
-            ? data.present.map(u => `
+        const presentUsers = data.users.filter(u => u.statusText === "Présent");
+        const absentUsers = data.users.filter(u => u.statusText !== "Présent");
+
+        presentBody.innerHTML = presentUsers.length
+            ? presentUsers.map(u => `
                 <tr>
                     <td>${u.lastName}</td>
-                    <td>${u.lastRegistrationTime ?? "Aucun"}</td>
+                    <td>${u.lastRegistrationTime}</td>
                     <td><span class="badge bg-success">Présent</span></td>
                 </tr>`).join("")
-            : `<tr><td colspan="3" class="text-center text-muted">Aucun</td></tr>`;
+            : `<tr><td colspan="3" class="text-center text-muted py-4">Aucun utilisateur présent</td></tr>`;
 
-        // Absents
-        absentBody.innerHTML = data.absent.length
-            ? data.absent.map(u => `
+        absentBody.innerHTML = absentUsers.length
+            ? absentUsers.map(u => `
                 <tr>
                     <td>${u.lastName}</td>
-                    <td>${u.lastRegistrationTime ?? "Aucun"}</td>
+                    <td>${u.lastRegistrationTime}</td>
                     <td><span class="badge bg-danger">Absent</span></td>
                 </tr>`).join("")
-            : `<tr><td colspan="3" class="text-center text-muted">Aucun</td></tr>`;
-
-        // Mettre à jour les badges
-        document.getElementById("presentCount").textContent = data.present.length;
-        document.getElementById("absentCount").textContent = data.absent.length;
+            : `<tr><td colspan="3" class="text-center text-muted py-4">Aucun utilisateur absent</td></tr>`;
     });
 
     connection.start().catch(err => console.error(err));
 </script>
 
 <style>
-    .bg-white { background-color: #ffffff !important; }
-    .rounded-lg { border-radius: 0.5rem !important; }
-    .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05) !important; }
-    .fw-medium { font-weight: 500; }
-    .fw-semibold { font-weight: 600; }
-    .bg-success { background-color: #10b981 !important; }
-    .bg-danger { background-color: #ef4444 !important; }
-    .table th, .table td { vertical-align: middle; }
+    /* Style des cartes compactes */
+    .card {
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+        border-radius: 12px !important;
+        padding: 1rem !important;
+        min-height: 100px;
+        width: auto;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.08) !important;
+    }
+
+    .card h3 {
+        font-size: 1.75rem;
+        line-height: 1.2;
+        margin: 0;
+    }
+
+    .card .small {
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+  
+
+    /* Style des tables */
+    .table th, .table td {
+        vertical-align: middle;
+        padding: 0.75rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,0.03);
+    }
+
+    /* En-têtes de tableau */
+    .table-light th {
+        font-weight: 600;
+        color: #495057;
+    }
 </style>
