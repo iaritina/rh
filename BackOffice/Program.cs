@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using BackOffice.Hubs;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // DbContext
@@ -17,20 +16,20 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<MonitoringService>();
 builder.Services.AddScoped<RegistrationService>();
 builder.Services.AddSignalR();
-
-
-
 builder.Services.AddScoped<CongeService>();
 
-// Controllers avec vues
-builder.Services.AddControllersWithViews();
+// Ajout de la session pour TempData
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+builder.Services.AddControllersWithViews()
+    .AddSessionStateTempDataProvider(); // <-- important pour TempData
 
 // Authentification par cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login"; // page de login
-        options.AccessDeniedPath = "/Account/AccessDenied"; // page si accès refusé
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromHours(1);
     });
 
@@ -49,11 +48,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // ⚠️ avant Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapHub<MonitoringHub>("/monitoringHub");
+// ⚠️ Ajouter la session dans le pipeline
+app.UseSession();
 
+app.MapHub<MonitoringHub>("/monitoringHub");
 
 // Route par défaut
 app.MapControllerRoute(

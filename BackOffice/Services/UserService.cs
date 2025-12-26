@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using BackOffice.Data;
 using BackOffice.Models;
 using BackOffice.ViewModels;
+using System.Globalization;
+using Microsoft.AspNetCore.Http;
+using System.Text;
 
 namespace BackOffice.Services
 {
@@ -87,6 +90,68 @@ namespace BackOffice.Services
                 .ThenBy(u => u.FirstName)
                 .ToListAsync();
         }
+        
+        
+        public async Task<int> ImportUsersFromCsvAsync(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                throw new Exception("Fichier CSV vide");
+
+            int imported = 0;
+            int lineNumber = 0;
+
+            using var reader = new StreamReader(file.OpenReadStream(), Encoding.UTF8);
+
+            while (!reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                lineNumber++;
+
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+               
+                char separator = line.Contains(';') ? ';' : ',';
+                var parts = line.Split(separator);
+
+                
+                if (lineNumber == 1 && parts[0].ToLower().Contains("nom"))
+                    continue;
+
+                if (parts.Length < 4)
+                    throw new Exception($"Ligne {lineNumber} invalide : colonnes insuffisantes");
+
+                var firstName = parts[0].Trim();
+                var lastName = parts[1].Trim();
+                var email = parts[2].Trim();
+                var phone = parts[3].Trim();
+
+                if (string.IsNullOrEmpty(email))
+                    throw new Exception($"Email vide à la ligne {lineNumber}");
+
+                if (await _context.Users.AnyAsync(u => u.Email == email))
+                    continue; // on ignore les doublons proprement
+
+                DateTime? hiringDate = null;
+                if (parts.Length >= 5 && DateTime.TryParse(parts[4], out var parsed))
+                    hiringDate = parsed;
+
+                var user = new User
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email,
+                    Phone = phone,
+                    HiringDate = hiringDate ?? DateTime.Now
+                };
+
+                await CreateUser(user);
+                imported++;
+            }
+
+            return imported;
+        }
+
         
     }
     
