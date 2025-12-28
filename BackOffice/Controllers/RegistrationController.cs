@@ -1,6 +1,7 @@
 using BackOffice.Services;
 using BackOffice.Models;
 using Microsoft.AspNetCore.Mvc;
+using Shared;
 
 namespace BackOffice.Controllers
 {

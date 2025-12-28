@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using BackOffice.ViewModels;
 using Microsoft.AspNetCore.SignalR;
 using BackOffice.Hubs;
+using Shared;
 
 
 namespace BackOffice.Services

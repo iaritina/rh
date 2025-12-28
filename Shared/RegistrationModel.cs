@@ -1,9 +1,7 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
-namespace BackOffice.Models
+namespace Shared
 {
     public class Registration
     {

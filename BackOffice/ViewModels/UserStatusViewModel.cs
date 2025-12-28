@@ -1,5 +1,6 @@
 using BackOffice.Models;
 using System;
+using Shared;
 
 namespace BackOffice.ViewModels
 {

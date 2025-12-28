@@ -1,7 +1,6 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BackOffice.Models
+namespace Shared
 {
     public class User
     {

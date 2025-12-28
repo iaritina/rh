@@ -1,11 +1,8 @@
 using BackOffice.Data;
 using BackOffice.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
 using BackOffice.Models;
+using Shared;
 
 namespace BackOffice.Services
 {

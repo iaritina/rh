@@ -4,6 +4,7 @@ using BackOffice.Services;
 using BackOffice.Models;
 using BackOffice.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Shared;
 
 namespace BackOffice.Controllers
 {
