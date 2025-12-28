@@ -1,0 +1,49 @@
+﻿@model DemandeConge
+
+<h2>Nouvelle demande de congé</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="UserId"></label>
+        <input asp-for="UserId" class="form-control" />
+        <span asp-validation-for="UserId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DateDebut"></label>
+        <input asp-for="DateDebut" type="date" class="form-control" />
+        <span asp-validation-for="DateDebut" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="DateFin"></label>
+        <input asp-for="DateFin" type="date" class="form-control" />
+        <span asp-validation-for="DateFin" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NombreJour"></label>
+        <input asp-for="NombreJour" class="form-control" />
+        <small class="form-text text-muted">
+            Demi-journée autorisée (ex : 0.5)
+        </small>
+        <span asp-validation-for="NombreJour" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Motif"></label>
+        <textarea asp-for="Motif" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Soumettre
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Annuler
+    </a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

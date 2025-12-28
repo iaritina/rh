@@ -1,12 +1,9 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using BackOffice.Data;
 using BackOffice.Models;
 using BackOffice.ViewModels;
-using System.Globalization;
-using Microsoft.AspNetCore.Http;
 using System.Text;
+using Shared;
 
 namespace BackOffice.Services
 {

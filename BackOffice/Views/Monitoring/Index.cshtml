@@ -1,3 +1,4 @@
+@using Shared
 @model BackOffice.ViewModels.MonitoringViewModel
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -55,7 +56,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach (var u in Model.Users.Where(u => u.LastStatus == BackOffice.Models.RegistrationType.Enter))
+                    @foreach (var u in Model.Users.Where(u => u.LastStatus == RegistrationType.Enter))
                     {
                     <tr>
                         <td>@u.LastName</td>
@@ -83,7 +84,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach (var u in Model.Users.Where(u => u.LastStatus != BackOffice.Models.RegistrationType.Enter))
+                    @foreach (var u in Model.Users.Where(u => u.LastStatus != RegistrationType.Enter))
                     {
                     <tr>
                         <td>@u.LastName</td>

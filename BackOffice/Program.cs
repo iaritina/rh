@@ -17,6 +17,7 @@ builder.Services.AddScoped<MonitoringService>();
 builder.Services.AddScoped<RegistrationService>();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<CongeService>();
+builder.Services.AddScoped<DemandeCongeService>();
 
 // Ajout de la session pour TempData
 builder.Services.AddDistributedMemoryCache();

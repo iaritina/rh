@@ -1,4 +1,4 @@
-namespace BackOffice.Models
+namespace Shared
 {
     public enum RegistrationType
     {
